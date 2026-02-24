@@ -7,8 +7,9 @@ import { v4 as uuidv4 } from "uuid";
 export function useChat(botUuid: string) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
-  const [conversationId, setConversationId] = useState("");
+  const conversationIdRef = useRef("");
   const abortControllerRef = useRef<AbortController | null>(null);
+  const messagesRef = useRef<ChatMessage[]>([]);
 
   const sendMessage = useCallback(
     async (query: string) => {
@@ -31,7 +32,17 @@ export function useChat(botUuid: string) {
         timestamp: new Date(),
       };
 
-      setMessages((prev) => [...prev, userMsg, botMsg]);
+      // Build chat history from completed messages (exclude the empty bot placeholder)
+      const chatHistory = [...messagesRef.current, userMsg].map((msg) => ({
+        role: msg.role === "user" ? "user" : "assistant",
+        content: msg.content,
+      }));
+
+      setMessages((prev) => {
+        const next = [...prev, userMsg, botMsg];
+        messagesRef.current = next;
+        return next;
+      });
       setIsStreaming(true);
 
       const controller = new AbortController();
@@ -44,7 +55,8 @@ export function useChat(botUuid: string) {
           body: JSON.stringify({
             bot_id: botUuid,
             query,
-            conv_id: conversationId,
+            conv_id: conversationIdRef.current || undefined,
+            chat_history: chatHistory,
           }),
           signal: controller.signal,
         });
@@ -74,17 +86,19 @@ export function useChat(botUuid: string) {
               const data: AskTuringSSEData = JSON.parse(jsonStr);
 
               if (data.conversation_id) {
-                setConversationId(data.conversation_id);
+                conversationIdRef.current = data.conversation_id;
               }
 
               if (data.message) {
-                setMessages((prev) =>
-                  prev.map((msg) =>
+                setMessages((prev) => {
+                  const next = prev.map((msg) =>
                     msg.id === botMsgId
                       ? { ...msg, content: msg.content + data.message }
                       : msg
-                  )
-                );
+                  );
+                  messagesRef.current = next;
+                  return next;
+                });
               }
 
               if (data.stream_end) {
@@ -97,8 +111,8 @@ export function useChat(botUuid: string) {
         }
       } catch (err) {
         if ((err as Error).name !== "AbortError") {
-          setMessages((prev) =>
-            prev.map((msg) =>
+          setMessages((prev) => {
+            const next = prev.map((msg) =>
               msg.id === botMsgId
                 ? {
                     ...msg,
@@ -106,15 +120,17 @@ export function useChat(botUuid: string) {
                       "Sorry, something went wrong. Please try again.",
                   }
                 : msg
-            )
-          );
+            );
+            messagesRef.current = next;
+            return next;
+          });
         }
       } finally {
         setIsStreaming(false);
         abortControllerRef.current = null;
       }
     },
-    [botUuid, conversationId, isStreaming]
+    [botUuid, isStreaming]
   );
 
   const stopStreaming = useCallback(() => {
@@ -124,13 +140,14 @@ export function useChat(botUuid: string) {
 
   const clearMessages = useCallback(() => {
     setMessages([]);
-    setConversationId("");
+    messagesRef.current = [];
+    conversationIdRef.current = "";
   }, []);
 
   return {
     messages,
     isStreaming,
-    conversationId,
+    conversationId: conversationIdRef.current,
     sendMessage,
     stopStreaming,
     clearMessages,

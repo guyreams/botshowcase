@@ -7,7 +7,7 @@ const ASKTURING_BASE_URL =
 
 // POST /api/chat — SSE proxy to AskTuring
 export async function POST(req: Request) {
-  const { bot_id, query, conv_id } = await req.json();
+  const { bot_id, query, conv_id, chat_history } = await req.json();
 
   if (!bot_id || !query) {
     return new Response(
@@ -16,9 +16,12 @@ export async function POST(req: Request) {
     );
   }
 
-  const body: Record<string, string> = { bot_id, query };
+  const body: Record<string, unknown> = { bot_id, query };
   if (conv_id) {
     body.conv_id = conv_id;
+  }
+  if (chat_history && Array.isArray(chat_history)) {
+    body.chat_history = chat_history;
   }
 
   const upstream = await fetch(
