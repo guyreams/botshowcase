@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <rect width="200" height="200" rx="24" fill="#e5e7eb"/>
+  <circle cx="100" cy="85" r="35" fill="#9ca3af"/>
+  <rect x="65" y="75" width="14" height="14" rx="4" fill="#fff"/>
+  <rect x="121" y="75" width="14" height="14" rx="4" fill="#fff"/>
+  <circle cx="72" cy="82" r="4" fill="#4b5563"/>
+  <circle cx="128" cy="82" r="4" fill="#4b5563"/>
+  <path d="M85 98 Q100 112 115 98" stroke="#4b5563" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <rect x="88" y="48" width="24" height="8" rx="4" fill="#9ca3af"/>
+  <rect x="96" y="40" width="8" height="12" rx="4" fill="#9ca3af"/>
+  <rect x="55" y="130" width="90" height="40" rx="12" fill="#9ca3af"/>
+  <text x="100" y="156" text-anchor="middle" fill="#fff" font-family="system-ui" font-size="14" font-weight="600">BOT</text>
+</svg>
