@@ -1,5 +1,7 @@
 "use client";
 
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { ChatMessage as ChatMessageType } from "@/lib/types";
 
 interface ChatMessageProps {
@@ -12,6 +14,7 @@ export default function ChatMessage({
   isStreaming,
 }: ChatMessageProps) {
   const isUser = message.role === "user";
+  const content = message.content || (isStreaming ? "" : "...");
 
   return (
     <div
@@ -30,13 +33,21 @@ export default function ChatMessage({
             : "var(--theme-bot-text)",
         }}
       >
-        <p
-          className={`text-sm leading-relaxed whitespace-pre-wrap ${
-            isStreaming && !isUser ? "streaming-cursor" : ""
-          }`}
-        >
-          {message.content || (isStreaming ? "" : "...")}
-        </p>
+        {isUser ? (
+          <p className="text-sm leading-relaxed whitespace-pre-wrap">
+            {content}
+          </p>
+        ) : (
+          <div
+            className={`chat-markdown text-sm leading-relaxed ${
+              isStreaming ? "streaming-cursor" : ""
+            }`}
+          >
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {content}
+            </ReactMarkdown>
+          </div>
+        )}
       </div>
     </div>
   );
