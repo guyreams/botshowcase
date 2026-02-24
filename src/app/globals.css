@@ -1,21 +1,46 @@
 @import "tailwindcss";
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* AskTuring Brand Colors */
+  --at-maroon: #9F2F31;
+  --at-maroon-dark: #7D2527;
+  --at-maroon-light: #B84345;
+  --at-text-dark: #050505;
+  --at-text-heading: #555F6D;
+  --at-text-muted: #6B7280;
+  --at-bg-white: #FFFFFF;
+  --at-bg-light: #F7F8F7;
+  --at-bg-warm: #FAF9F5;
+  --at-bg-cream: #FEF9EB;
+  --at-border: #EDECED;
+  --at-border-light: #E3E3E3;
+
+  --background: #FAF9F5;
+  --foreground: #050505;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-at-maroon: #9F2F31;
+  --color-at-maroon-dark: #7D2527;
+  --color-at-maroon-light: #B84345;
+  --color-at-heading: #555F6D;
+  --color-at-muted: #6B7280;
+  --color-at-bg: #FAF9F5;
+  --color-at-bg-light: #F7F8F7;
+  --color-at-border: #EDECED;
+  --font-sans: "Inter", system-ui, sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Streaming cursor animation for bot messages */
@@ -28,4 +53,9 @@ body {
   content: "\25AE";
   animation: blink 1s step-end infinite;
   margin-left: 2px;
+}
+
+/* Smooth focus transitions */
+input:focus, textarea:focus, select:focus {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }

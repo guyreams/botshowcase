@@ -37,26 +37,25 @@ export default function ChatInterface({ bot }: { bot: Chatbot }) {
     >
       {/* Header */}
       <header
-        className="flex items-center gap-3 border-b px-4 py-3"
+        className="flex items-center gap-3 px-4 py-3 shadow-sm"
         style={{
           backgroundColor: "var(--theme-primary)",
-          borderColor: "var(--theme-primary)",
         }}
       >
         <Link
           href="/"
-          className="flex items-center justify-center rounded-lg p-1.5 text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+          className="flex items-center justify-center rounded-full p-2 text-white/80 hover:text-white hover:bg-white/10 transition-colors"
         >
-          <ArrowLeft size={20} />
+          <ArrowLeft size={18} />
         </Link>
 
-        <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full bg-white/20">
+        <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full bg-white/20">
           <Image
-            src={bot.logo_url || "/placeholder-bot.svg"}
+            src={bot.logo_url || "/askturing-icon.png"}
             alt={bot.name}
             fill
             className="object-cover"
-            sizes="36px"
+            sizes="32px"
           />
         </div>
 
@@ -70,10 +69,10 @@ export default function ChatInterface({ bot }: { bot: Chatbot }) {
           onClick={() => {
             clearMessages();
           }}
-          className="flex items-center justify-center rounded-lg p-1.5 text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+          className="flex items-center justify-center rounded-full p-2 text-white/80 hover:text-white hover:bg-white/10 transition-colors"
           title="New conversation"
         >
-          <RotateCcw size={18} />
+          <RotateCcw size={16} />
         </button>
       </header>
 

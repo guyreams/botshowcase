@@ -46,7 +46,10 @@ export default function ChatInput({
   return (
     <div
       className="border-t px-4 py-3"
-      style={{ borderColor: "var(--theme-bot-bubble)" }}
+      style={{
+        borderColor: "var(--theme-bot-bubble)",
+        backgroundColor: "var(--theme-background)",
+      }}
     >
       <div className="mx-auto flex max-w-3xl items-end gap-2">
         <textarea
@@ -56,7 +59,7 @@ export default function ChatInput({
           onKeyDown={handleKeyDown}
           placeholder="Type a message..."
           rows={1}
-          className="flex-1 resize-none rounded-xl border px-4 py-2.5 text-sm outline-none transition-colors focus:ring-2"
+          className="flex-1 resize-none rounded-full border px-4 py-2.5 text-sm outline-none transition-colors focus:ring-2"
           style={{
             borderColor: "var(--theme-bot-bubble)",
             color: "var(--theme-foreground)",
@@ -69,21 +72,21 @@ export default function ChatInput({
         {isStreaming ? (
           <button
             onClick={onStop}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white transition-colors"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white transition-colors"
             style={{ backgroundColor: "var(--theme-primary)" }}
             title="Stop generating"
           >
-            <Square size={16} />
+            <Square size={14} />
           </button>
         ) : (
           <button
             onClick={handleSubmit}
             disabled={!input.trim()}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white transition-colors disabled:opacity-40"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white transition-colors disabled:opacity-40"
             style={{ backgroundColor: "var(--theme-primary)" }}
             title="Send message"
           >
-            <Send size={16} />
+            <Send size={14} />
           </button>
         )}
       </div>

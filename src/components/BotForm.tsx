@@ -60,19 +60,32 @@ export default function BotForm({ bot, onSubmit, onCancel }: BotFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      <h2 className="text-lg font-semibold text-gray-900">
+      <h2
+        className="text-lg font-semibold"
+        style={{ color: "var(--at-text-dark)" }}
+      >
         {bot ? "Edit Bot" : "Create New Bot"}
       </h2>
 
       {error && (
-        <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
+        <div
+          className="rounded-xl px-4 py-3 text-sm"
+          style={{
+            backgroundColor: "#9F2F3110",
+            border: "1px solid #9F2F3130",
+            color: "#9F2F31",
+          }}
+        >
           {error}
         </div>
       )}
 
       {/* Name */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label
+          className="block text-sm font-medium mb-1"
+          style={{ color: "var(--at-text-heading)" }}
+        >
           Name *
         </label>
         <input
@@ -80,14 +93,22 @@ export default function BotForm({ bot, onSubmit, onCancel }: BotFormProps) {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="e.g. Alice in Wonderland"
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+          className="w-full rounded-xl border px-3 py-2.5 text-sm outline-none focus:ring-2"
+          style={{
+            borderColor: "var(--at-border)",
+            // @ts-expect-error CSS custom property
+            "--tw-ring-color": "var(--at-maroon)",
+          }}
           required
         />
       </div>
 
       {/* Bot UUID */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label
+          className="block text-sm font-medium mb-1"
+          style={{ color: "var(--at-text-heading)" }}
+        >
           AskTuring Public Interface UUID *
         </label>
         <input
@@ -95,14 +116,22 @@ export default function BotForm({ bot, onSubmit, onCancel }: BotFormProps) {
           value={botUuid}
           onChange={(e) => setBotUuid(e.target.value)}
           placeholder="e.g. ae3fa1fb-ceb6-40f0-9ae5-ad80f9119e78"
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+          className="w-full rounded-xl border px-3 py-2.5 text-sm font-mono outline-none focus:ring-2"
+          style={{
+            borderColor: "var(--at-border)",
+            // @ts-expect-error CSS custom property
+            "--tw-ring-color": "var(--at-maroon)",
+          }}
           required
         />
       </div>
 
       {/* Description */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label
+          className="block text-sm font-medium mb-1"
+          style={{ color: "var(--at-text-heading)" }}
+        >
           Description
         </label>
         <textarea
@@ -110,7 +139,12 @@ export default function BotForm({ bot, onSubmit, onCancel }: BotFormProps) {
           onChange={(e) => setDescription(e.target.value)}
           placeholder="A brief description of what this bot does..."
           rows={2}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 resize-none"
+          className="w-full rounded-xl border px-3 py-2.5 text-sm outline-none focus:ring-2 resize-none"
+          style={{
+            borderColor: "var(--at-border)",
+            // @ts-expect-error CSS custom property
+            "--tw-ring-color": "var(--at-maroon)",
+          }}
         />
       </div>
 
@@ -125,7 +159,8 @@ export default function BotForm({ bot, onSubmit, onCancel }: BotFormProps) {
         <button
           type="submit"
           disabled={saving}
-          className="rounded-lg bg-indigo-500 px-6 py-2 text-sm font-medium text-white hover:bg-indigo-600 disabled:opacity-50 transition-colors"
+          className="rounded-full px-6 py-2.5 text-sm font-medium text-white disabled:opacity-50 transition-colors hover:opacity-90"
+          style={{ backgroundColor: "var(--at-maroon)" }}
         >
           {saving ? "Saving..." : bot ? "Update Bot" : "Create Bot"}
         </button>
@@ -133,7 +168,11 @@ export default function BotForm({ bot, onSubmit, onCancel }: BotFormProps) {
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-lg border border-gray-300 px-6 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+            className="rounded-full border px-6 py-2.5 text-sm font-medium transition-colors hover:bg-gray-50"
+            style={{
+              borderColor: "var(--at-border)",
+              color: "var(--at-text-heading)",
+            }}
           >
             Cancel
           </button>

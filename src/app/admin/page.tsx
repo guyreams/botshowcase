@@ -6,6 +6,7 @@ import { useBots } from "@/hooks/useBots";
 import BotForm from "@/components/BotForm";
 import BotList from "@/components/BotList";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
 
 export default function AdminPage() {
@@ -48,23 +49,41 @@ export default function AdminPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen" style={{ backgroundColor: "var(--at-bg-warm)" }}>
       {/* Header */}
-      <header className="border-b bg-white">
+      <header
+        className="border-b"
+        style={{ backgroundColor: "var(--at-bg-white)", borderColor: "var(--at-border)" }}
+      >
         <div className="mx-auto max-w-3xl flex items-center gap-4 px-4 py-4">
           <Link
             href="/"
-            className="flex items-center justify-center rounded-lg p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+            className="flex items-center justify-center rounded-full p-2 transition-colors hover:bg-gray-100"
+            style={{ color: "var(--at-text-muted)" }}
           >
-            <ArrowLeft size={20} />
+            <ArrowLeft size={18} />
           </Link>
-          <div>
-            <h1 className="text-xl font-bold text-gray-900">
-              Bot Administration
-            </h1>
-            <p className="text-sm text-gray-500">
-              Create and manage your chatbots
-            </p>
+          <div className="flex-1">
+            <div className="flex items-center gap-3">
+              <Image
+                src="/askturing-icon.png"
+                alt="AskTuring"
+                width={28}
+                height={28}
+                className="h-7 w-7"
+              />
+              <div>
+                <h1
+                  className="text-lg font-semibold"
+                  style={{ color: "var(--at-text-dark)" }}
+                >
+                  Bot Administration
+                </h1>
+                <p className="text-sm" style={{ color: "var(--at-text-muted)" }}>
+                  Create and manage your AI assistants
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </header>
@@ -72,7 +91,10 @@ export default function AdminPage() {
       <div className="mx-auto max-w-3xl px-4 py-8 space-y-8">
         {/* Form */}
         {showForm && (
-          <div className="rounded-xl border border-gray-200 bg-white p-6">
+          <div
+            className="rounded-2xl border bg-white p-6"
+            style={{ borderColor: "var(--at-border)" }}
+          >
             <BotForm
               key={editingBot?.id || "new"}
               bot={editingBot}
@@ -85,7 +107,13 @@ export default function AdminPage() {
         {/* Bot List */}
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" />
+            <div
+              className="h-8 w-8 animate-spin rounded-full border-2 border-t-2"
+              style={{
+                borderColor: "var(--at-border)",
+                borderTopColor: "var(--at-maroon)",
+              }}
+            />
           </div>
         ) : (
           <BotList bots={bots} onEdit={handleEdit} onDelete={handleDelete} />
