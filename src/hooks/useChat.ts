@@ -8,6 +8,7 @@ export function useChat(botUuid: string) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const conversationIdRef = useRef("");
+  const tokenRef = useRef("");
   const abortControllerRef = useRef<AbortController | null>(null);
   // messagesRef is the single source of truth — updated synchronously, never inside setMessages updaters
   const messagesRef = useRef<ChatMessage[]>([]);
@@ -33,19 +34,6 @@ export function useChat(botUuid: string) {
         timestamp: new Date(),
       };
 
-      // Build chat history from completed messages (exclude any empty bot placeholders)
-      const chatHistory = [...messagesRef.current, userMsg]
-        .filter((msg) => msg.content.trim() !== "")
-        .map((msg) => ({
-          role: msg.role === "user" ? "user" : "assistant",
-          content: msg.content,
-        }));
-
-      // DEBUG: log what the client is sending
-      console.log("[useChat] messagesRef contents:", messagesRef.current.map(m => ({ role: m.role, contentLen: m.content.length, contentPreview: m.content.slice(0, 50) })));
-      console.log("[useChat] chatHistory being sent:", chatHistory.length, "entries");
-      console.log("[useChat] conv_id being sent:", conversationIdRef.current || "(none)");
-
       // Update ref synchronously BEFORE any async work
       messagesRef.current = [...messagesRef.current, userMsg, botMsg];
       setMessages([...messagesRef.current]);
@@ -62,7 +50,7 @@ export function useChat(botUuid: string) {
             bot_id: botUuid,
             query,
             conv_id: conversationIdRef.current || undefined,
-            chat_history: chatHistory,
+            token: tokenRef.current || undefined,
           }),
           signal: controller.signal,
         });
@@ -70,6 +58,12 @@ export function useChat(botUuid: string) {
         if (!response.ok || !response.body) {
           throw new Error("Stream failed");
         }
+
+        // Extract conversation ID and security token from response headers
+        const headerConvId = response.headers.get("x-conversation-id");
+        const headerToken = response.headers.get("x-conversation-token");
+        if (headerConvId) conversationIdRef.current = headerConvId;
+        if (headerToken) tokenRef.current = headerToken;
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
@@ -89,15 +83,10 @@ export function useChat(botUuid: string) {
             if (!jsonStr) continue;
 
             try {
-              const data: AskTuringSSEData = JSON.parse(jsonStr);
+              const data = JSON.parse(jsonStr);
 
-              // DEBUG: log first SSE chunk to see full shape
+              // Also pick up conversation_id from SSE body as fallback
               if (data.conversation_id && !conversationIdRef.current) {
-                console.log("[useChat] SSE first chunk (raw):", jsonStr);
-                console.log("[useChat] conversation_id received:", data.conversation_id);
-              }
-
-              if (data.conversation_id) {
                 conversationIdRef.current = data.conversation_id;
               }
 
@@ -134,8 +123,6 @@ export function useChat(botUuid: string) {
       } finally {
         setIsStreaming(false);
         abortControllerRef.current = null;
-        // DEBUG: log final state of ref after streaming
-        console.log("[useChat] after streaming, messagesRef contents:", messagesRef.current.map(m => ({ role: m.role, contentLen: m.content.length })));
       }
     },
     [botUuid, isStreaming]
@@ -149,6 +136,7 @@ export function useChat(botUuid: string) {
   const clearMessages = useCallback(() => {
     messagesRef.current = [];
     conversationIdRef.current = "";
+    tokenRef.current = "";
     setMessages([]);
   }, []);
 

@@ -31,6 +31,7 @@ export interface ChatMessage {
 
 export interface AskTuringSSEData {
   conversation_id: string;
+  token: string;
   message: string;
   stream_end: boolean;
 }

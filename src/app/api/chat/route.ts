@@ -7,7 +7,7 @@ const ASKTURING_BASE_URL =
 
 // POST /api/chat — SSE proxy to AskTuring
 export async function POST(req: Request) {
-  const { bot_id, query, conv_id, chat_history } = await req.json();
+  const { bot_id, query, conv_id, token } = await req.json();
 
   if (!bot_id || !query) {
     return new Response(
@@ -20,17 +20,9 @@ export async function POST(req: Request) {
   if (conv_id) {
     body.conv_id = conv_id;
   }
-  if (chat_history && Array.isArray(chat_history)) {
-    body.chat_history = chat_history;
+  if (token) {
+    body.token = token;
   }
-
-  // DEBUG: log what we're sending to AskTuring
-  console.log("[chat] ➜ AskTuring request:", JSON.stringify({
-    conv_id: conv_id || "(none)",
-    query,
-    chat_history_length: chat_history?.length ?? 0,
-    chat_history: chat_history ?? [],
-  }, null, 2));
 
   const upstream = await fetch(
     `${ASKTURING_BASE_URL}/public-interface/external/chat`,
@@ -48,14 +40,21 @@ export async function POST(req: Request) {
     );
   }
 
-  // Pipe the upstream SSE stream directly through
+  // Forward the conversation headers from AskTuring so the client can read them
+  const responseHeaders: Record<string, string> = {
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache, no-transform",
+    Connection: "keep-alive",
+    "X-Accel-Buffering": "no",
+  };
+
+  const convId = upstream.headers.get("x-conversation-id");
+  const convToken = upstream.headers.get("x-conversation-token");
+  if (convId) responseHeaders["x-conversation-id"] = convId;
+  if (convToken) responseHeaders["x-conversation-token"] = convToken;
+
   return new Response(upstream.body, {
     status: 200,
-    headers: {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache, no-transform",
-      Connection: "keep-alive",
-      "X-Accel-Buffering": "no",
-    },
+    headers: responseHeaders,
   });
 }
