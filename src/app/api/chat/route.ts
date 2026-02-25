@@ -24,6 +24,14 @@ export async function POST(req: Request) {
     body.chat_history = chat_history;
   }
 
+  // DEBUG: log what we're sending to AskTuring
+  console.log("[chat] ➜ AskTuring request:", JSON.stringify({
+    conv_id: conv_id || "(none)",
+    query,
+    chat_history_length: chat_history?.length ?? 0,
+    chat_history: chat_history ?? [],
+  }, null, 2));
+
   const upstream = await fetch(
     `${ASKTURING_BASE_URL}/public-interface/external/chat`,
     {
